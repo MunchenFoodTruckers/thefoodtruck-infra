@@ -4,12 +4,10 @@ services:
   # --------------------------------------------------------------------------------
   - type: web
     name: foodtruck-web
-    env: node
+    env: docker
     plan: free
     repo: https://github.com/MunchenFoodTruckers/thefoodtruck-web.git
     branch: main
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
     envVars:
       - key: NODE_VERSION
         value: 20.12.12
@@ -26,12 +24,10 @@ services:
   # 1. Users Service (Auth)
   - type: web
     name: foodtruck-users-service
-    env: node
+    env: docker
     plan: free
     repo: https://github.com/MunchenFoodTruckers/thefoodtruck-users-service.git
     branch: main
-    buildCommand: npm install --production=false && npx prisma generate && npm run build
-    startCommand: npm run start
     envVars:
       - key: NODE_VERSION
         value: 20.12.12
@@ -45,12 +41,10 @@ services:
   # 2. Menu Service
   - type: web
     name: foodtruck-menu-service
-    env: node
+    env: docker
     plan: free
     repo: https://github.com/MunchenFoodTruckers/thefoodtruck-menu-service.git
     branch: main
-    buildCommand: npm install --production=false && npx prisma generate && npm run build
-    startCommand: npm run start
     envVars:
       - key: NODE_VERSION
         value: 20.12.12
@@ -62,12 +56,10 @@ services:
   # 3. Orders Service
   - type: web
     name: foodtruck-orders-service
-    env: node
+    env: docker
     plan: free
     repo: https://github.com/MunchenFoodTruckers/thefoodtruck-orders-service.git
     branch: main
-    buildCommand: npm install --production=false && npx prisma generate && npm run build
-    startCommand: npm run start
     envVars:
       - key: NODE_VERSION
         value: 20.12.12
