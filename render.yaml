@@ -6,7 +6,7 @@ services:
     name: foodtruck-web
     env: node
     plan: free
-    repo: MunchenFoodTruckers/thefoodtruck-web
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-web.git
     branch: main
     buildCommand: npm install && npm run build
     startCommand: npm run start
@@ -28,7 +28,7 @@ services:
     name: foodtruck-users-service
     env: node
     plan: free
-    repo: MunchenFoodTruckers/thefoodtruck-users-service
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-users-service.git
     branch: main
     buildCommand: npm install && npm run build
     startCommand: npm run start
@@ -45,7 +45,7 @@ services:
     name: foodtruck-menu-service
     env: node
     plan: free
-    repo: MunchenFoodTruckers/thefoodtruck-menu-service
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-menu-service.git
     branch: main
     buildCommand: npm install && npm run build
     startCommand: npm run start
@@ -60,7 +60,7 @@ services:
     name: foodtruck-orders-service
     env: node
     plan: free
-    repo: MunchenFoodTruckers/thefoodtruck-orders-service
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-orders-service.git
     branch: main
     buildCommand: npm install && npm run build
     startCommand: npm run start
