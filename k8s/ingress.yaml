@@ -1,0 +1,82 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: foodtruck-ingress
+  namespace: foodtruck
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /()(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: web
+            port:
+              number: 80
+      - path: /api/users(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: users
+            port:
+              number: 80
+      - path: /api/menu(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: menu
+            port:
+              number: 80
+      - path: /api/orders(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: orders
+            port:
+              number: 80
+      - path: /api/payments(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: payments
+            port:
+              number: 80
+      - path: /api/schedule(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: schedule
+            port:
+              number: 80
+      - path: /api/offers(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: offers
+            port:
+              number: 80
+      - path: /api/diet-plan(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: diet-plan
+            port:
+              number: 80
+      - path: /api/referrals(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: referrals
+            port:
+              number: 80
+      - path: /api/notifications(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: notifications
+            port:
+              number: 80

@@ -1,0 +1,230 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --api.insecure=true
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - webnet
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: foodtruck
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - webnet
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - webnet
+
+  web:
+    build:
+      context: ../thefoodtruck-web
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.web.entrypoints=web"
+      - "traefik.http.routers.web.priority=1"
+      - "traefik.http.services.web.loadbalancer.server.port=3000"
+    depends_on:
+      - traefik
+    networks:
+      - webnet
+
+  users:
+    build:
+      context: ../thefoodtruck-users-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3001
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users.rule=PathPrefix(`/api/users`)"
+      - "traefik.http.routers.users.entrypoints=web"
+      - "traefik.http.routers.users.priority=100"
+      - "traefik.http.services.users.loadbalancer.server.port=3001"
+    depends_on:
+      - postgres
+      - redis
+      - traefik
+    networks:
+      - webnet
+
+  menu:
+    build:
+      context: ../thefoodtruck-menu-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3002
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.menu.rule=PathPrefix(`/api/menu`)"
+      - "traefik.http.routers.menu.entrypoints=web"
+      - "traefik.http.routers.menu.priority=100"
+      - "traefik.http.services.menu.loadbalancer.server.port=3002"
+    depends_on:
+      - postgres
+      - traefik
+    networks:
+      - webnet
+
+  orders:
+    build:
+      context: ../thefoodtruck-orders-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3003
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.orders.rule=PathPrefix(`/api/orders`)"
+      - "traefik.http.routers.orders.entrypoints=web"
+      - "traefik.http.routers.orders.priority=100"
+      - "traefik.http.services.orders.loadbalancer.server.port=3003"
+    depends_on:
+      - postgres
+      - traefik
+    networks:
+      - webnet
+
+  payments:
+    build:
+      context: ../thefoodtruck-payments-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3004
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.payments.rule=PathPrefix(`/api/payments`)"
+      - "traefik.http.routers.payments.entrypoints=web"
+      - "traefik.http.routers.payments.priority=100"
+      - "traefik.http.services.payments.loadbalancer.server.port=3004"
+    depends_on:
+      - postgres
+      - traefik
+    networks:
+      - webnet
+
+  schedule:
+    build:
+      context: ../thefoodtruck-schedule-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3005
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.schedule.rule=PathPrefix(`/api/schedule`)"
+      - "traefik.http.routers.schedule.entrypoints=web"
+      - "traefik.http.routers.schedule.priority=100"
+      - "traefik.http.services.schedule.loadbalancer.server.port=3005"
+    depends_on:
+      - postgres
+      - traefik
+    networks:
+      - webnet
+
+  offers:
+    build:
+      context: ../thefoodtruck-offers-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3006
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.offers.rule=PathPrefix(`/api/offers`)"
+      - "traefik.http.routers.offers.entrypoints=web"
+      - "traefik.http.routers.offers.priority=100"
+      - "traefik.http.services.offers.loadbalancer.server.port=3006"
+    depends_on:
+      - postgres
+      - traefik
+    networks:
+      - webnet
+
+  diet-plan:
+    build:
+      context: ../thefoodtruck-diet-plan-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3007
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.diet-plan.rule=PathPrefix(`/api/diet-plan`)"
+      - "traefik.http.routers.diet-plan.entrypoints=web"
+      - "traefik.http.routers.diet-plan.priority=100"
+      - "traefik.http.services.diet-plan.loadbalancer.server.port=3007"
+    depends_on:
+      - postgres
+      - traefik
+    networks:
+      - webnet
+
+  referrals:
+    build:
+      context: ../thefoodtruck-referrals-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3008
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.referrals.rule=PathPrefix(`/api/referrals`)"
+      - "traefik.http.routers.referrals.entrypoints=web"
+      - "traefik.http.routers.referrals.priority=100"
+      - "traefik.http.services.referrals.loadbalancer.server.port=3008"
+    depends_on:
+      - postgres
+      - traefik
+    networks:
+      - webnet
+
+  notifications:
+    build:
+      context: ../thefoodtruck-notifications-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/foodtruck?schema=public
+      PORT: 3009
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.notifications.rule=PathPrefix(`/api/notifications`)"
+      - "traefik.http.routers.notifications.entrypoints=web"
+      - "traefik.http.routers.notifications.priority=100"
+      - "traefik.http.services.notifications.loadbalancer.server.port=3009"
+    depends_on:
+      - postgres
+      - traefik
+    networks:
+      - webnet
+
+volumes:
+  pgdata:
+
+networks:
+  webnet:
+    driver: bridge
