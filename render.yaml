@@ -1,0 +1,77 @@
+services:
+  # --------------------------------------------------------------------------------
+  # FRONTEND
+  # --------------------------------------------------------------------------------
+  - type: web
+    name: foodtruck-web
+    env: node
+    plan: free
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-web
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.12
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: foodtruck-users-service
+          property: host
+
+  # --------------------------------------------------------------------------------
+  # BACKEND MICROSERVICES (Critical Path)
+  # --------------------------------------------------------------------------------
+  
+  # 1. Users Service (Auth)
+  - type: web
+    name: foodtruck-users-service
+    env: node
+    plan: free
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-users-service
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.12
+      - key: DATABASE_URL
+        sync: false # User must provide this in dashboard
+      - key: JWT_SECRET
+        generateValue: true
+
+  # 2. Menu Service
+  - type: web
+    name: foodtruck-menu-service
+    env: node
+    plan: free
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-menu-service
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.12
+      - key: DATABASE_URL
+        sync: false
+
+  # 3. Orders Service
+  - type: web
+    name: foodtruck-orders-service
+    env: node
+    plan: free
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-orders-service
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.12
+      - key: DATABASE_URL
+        sync: false
+
+databases:
+  - name: foodtruck-db
+    plan: free
+    databaseName: foodtruck
+    user: foodtruck
