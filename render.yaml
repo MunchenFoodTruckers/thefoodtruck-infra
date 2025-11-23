@@ -68,6 +68,66 @@ services:
           name: foodtruck-db
           property: connectionString
 
+  # 4. Schedule Service
+  - type: web
+    name: foodtruck-schedule-service
+    env: docker
+    plan: free
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-schedule-service.git
+    branch: main
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.12
+      - key: DATABASE_URL
+        fromDatabase:
+          name: foodtruck-db
+          property: connectionString
+
+  # 5. Diet Plan Service
+  - type: web
+    name: foodtruck-diet-plan-service
+    env: docker
+    plan: free
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-diet-plan-service.git
+    branch: main
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.12
+      - key: DATABASE_URL
+        fromDatabase:
+          name: foodtruck-db
+          property: connectionString
+
+  # 6. Payments Service
+  - type: web
+    name: foodtruck-payments-service
+    env: docker
+    plan: free
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-payments-service.git
+    branch: main
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.12
+      - key: DATABASE_URL
+        fromDatabase:
+          name: foodtruck-db
+          property: connectionString
+
+  # 7. Referrals Service
+  - type: web
+    name: foodtruck-referrals-service
+    env: docker
+    plan: free
+    repo: https://github.com/MunchenFoodTruckers/thefoodtruck-referrals-service.git
+    branch: main
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.12
+      - key: DATABASE_URL
+        fromDatabase:
+          name: foodtruck-db
+          property: connectionString
+
 databases:
   - name: foodtruck-db
     plan: free
